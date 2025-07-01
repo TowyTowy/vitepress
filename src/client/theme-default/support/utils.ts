@@ -3,7 +3,7 @@ import { useData } from '../composables/data'
 import { isExternal, PATHNAME_PROTOCOL_RE } from '../../shared'
 
 export function throttleAndDebounce(fn: () => void, delay: number): () => void {
-  let timeoutId: NodeJS.Timeout
+  let timeoutId: ReturnType<typeof setTimeout>
   let called = false
 
   return () => {
