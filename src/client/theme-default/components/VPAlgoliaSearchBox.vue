@@ -13,8 +13,6 @@ const router = useRouter()
 const route = useRoute()
 const { site, localeIndex, lang } = useData()
 
-type DocSearchProps = Parameters<typeof docsearch>[0]
-
 onMounted(update)
 watch(localeIndex, update)
 
@@ -41,11 +39,11 @@ function update() {
 }
 
 function initialize(userOptions: DefaultTheme.AlgoliaSearchOptions) {
-  const options = Object.assign<{}, {}, DocSearchProps>({}, userOptions, {
+  const options = Object.assign({}, userOptions, {
     container: '#docsearch',
 
     navigator: {
-      navigate({ itemUrl }) {
+      navigate({ itemUrl }: { itemUrl: string }) {
         const { pathname: hitPathname } = new URL(
           window.location.origin + itemUrl
         )
@@ -60,16 +58,15 @@ function initialize(userOptions: DefaultTheme.AlgoliaSearchOptions) {
       }
     },
 
-    transformItems(items) {
-      return items.map((item) => {
+    transformItems(items: any[]) {
+      return items.map((item: any) => {
         return Object.assign({}, item, {
           url: getRelativePath(item.url)
         })
       })
     },
 
-    // @ts-expect-error vue-tsc thinks this should return Vue JSX but it returns the required React one
-    hitComponent({ hit, children }) {
+    hitComponent({ hit, children }: { hit: any; children: any }) {
       return {
         __v: null,
         type: 'a',
@@ -79,7 +76,7 @@ function initialize(userOptions: DefaultTheme.AlgoliaSearchOptions) {
         props: { href: hit.url, children }
       }
     }
-  })
+  } as any)
 
   docsearch(options)
 }
